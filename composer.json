@@ -1,0 +1,23 @@
+{
+  "name": "guardreport/guardreport",
+  "description": "GuardReport security incident reporting application",
+  "type": "project",
+  "require": {
+    "php": "^8.0",
+    "firebase/php-jwt": "^6.11",
+    "phpmailer/phpmailer": "^6.0",
+    "vlucas/phpdotenv": "^5.5",
+    "phpoffice/phpspreadsheet": "^1.0",
+    "myclabs/php-enum": "^1.9",
+    "graham-campbell/result-type": "^1.1",
+    "maennchen/zipstream-php": "^2.4"
+  },
+  "autoload": {
+    "classmap": [
+      "helpers/",
+      "modules/"
+    ]
+  },
+  "minimum-stability": "stable",
+  "prefer-stable": true
+}
