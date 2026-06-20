@@ -33,9 +33,9 @@ CREATE TABLE IF NOT EXISTS `activity_log` (
   KEY `idx_action` (`action`),
   KEY `idx_time` (`created_at`),
   CONSTRAINT `activity_log_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE SET NULL
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table guardreport_db.activity_log: ~6 rows (approximately)
+-- Dumping data for table guardreport_db.activity_log: ~9 rows (approximately)
 REPLACE INTO `activity_log` (`id`, `user_id`, `action`, `module`, `description`, `ip_address`, `created_at`) VALUES
 	(1, 1, 'create', 'incidents', 'Incident #1 submitted: Umukriya yibye ipine', '::1', '2026-06-19 10:03:15'),
 	(2, 2, 'create', 'users', 'User account created', '::1', '2026-06-19 10:09:49'),
@@ -45,7 +45,8 @@ REPLACE INTO `activity_log` (`id`, `user_id`, `action`, `module`, `description`,
 	(6, 4, 'create', 'users', 'User account created', '::1', '2026-06-19 10:27:45'),
 	(7, 3, 'create', 'incidents', 'Incident #3 submitted: Fire Extinguisher Fall down', '::1', '2026-06-19 10:48:51'),
 	(8, 1, 'settings_update', 'settings', 'Updated 14 system setting(s)', '::1', '2026-06-20 03:53:26'),
-	(9, 1, 'report_export', 'reports', 'Exported incidents report (3 rows)', '::1', '2026-06-20 04:01:57');
+	(9, 1, 'report_export', 'reports', 'Exported incidents report (3 rows)', '::1', '2026-06-20 04:01:57'),
+	(10, 4, 'profile_update', 'profile', 'Updated profile information', '::1', '2026-06-20 15:57:22');
 
 -- Dumping structure for table guardreport_db.incident_evidence
 CREATE TABLE IF NOT EXISTS `incident_evidence` (
@@ -62,9 +63,9 @@ CREATE TABLE IF NOT EXISTS `incident_evidence` (
   KEY `idx_incident` (`incident_id`),
   CONSTRAINT `incident_evidence_ibfk_1` FOREIGN KEY (`incident_id`) REFERENCES `incidents` (`id`) ON DELETE CASCADE,
   CONSTRAINT `incident_evidence_ibfk_2` FOREIGN KEY (`uploaded_by`) REFERENCES `users` (`id`) ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table guardreport_db.incident_evidence: ~1 rows (approximately)
+-- Dumping data for table guardreport_db.incident_evidence: ~2 rows (approximately)
 REPLACE INTO `incident_evidence` (`id`, `incident_id`, `file_path`, `file_name`, `file_type`, `file_size`, `uploaded_by`, `created_at`) VALUES
 	(1, 2, 'evidence/2/6518e88090b247d8_1781864642.pdf', 'Letter.pdf', 'application/pdf', 115567, 1, '2026-06-19 10:24:02'),
 	(2, 3, 'evidence/3/6442a589d9511ba7_1781866131.jpg', 'fire.jpg', 'image/jpeg', 23077, 3, '2026-06-19 10:48:51');
@@ -110,9 +111,9 @@ CREATE TABLE IF NOT EXISTS `incident_updates` (
   KEY `idx_incident` (`incident_id`),
   CONSTRAINT `incident_updates_ibfk_1` FOREIGN KEY (`incident_id`) REFERENCES `incidents` (`id`) ON DELETE CASCADE,
   CONSTRAINT `incident_updates_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table guardreport_db.incident_updates: ~3 rows (approximately)
+-- Dumping data for table guardreport_db.incident_updates: ~4 rows (approximately)
 REPLACE INTO `incident_updates` (`id`, `incident_id`, `user_id`, `old_status`, `new_status`, `notes`, `created_at`) VALUES
 	(1, 1, 1, NULL, 'open', 'Incident submitted', '2026-06-19 10:03:15'),
 	(2, 2, 1, NULL, 'open', 'Incident submitted', '2026-06-19 10:24:02'),
@@ -145,9 +146,9 @@ CREATE TABLE IF NOT EXISTS `incidents` (
   CONSTRAINT `incidents_ibfk_1` FOREIGN KEY (`type_id`) REFERENCES `incident_types` (`id`) ON UPDATE CASCADE,
   CONSTRAINT `incidents_ibfk_2` FOREIGN KEY (`site_id`) REFERENCES `sites` (`id`) ON UPDATE CASCADE,
   CONSTRAINT `incidents_ibfk_3` FOREIGN KEY (`reported_by`) REFERENCES `users` (`id`) ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table guardreport_db.incidents: ~2 rows (approximately)
+-- Dumping data for table guardreport_db.incidents: ~3 rows (approximately)
 REPLACE INTO `incidents` (`id`, `title`, `description`, `type_id`, `site_id`, `reported_by`, `severity`, `status`, `incident_date`, `latitude`, `longitude`, `location_note`, `created_at`, `updated_at`) VALUES
 	(1, 'Umukriya yibye ipine', 'Yaritwaye yigize nkuwishyuye ariko ahita yirukanka', 1, 2, 1, 'high', 'open', '2026-06-19 12:01:00', -1.9463107, 30.0601837, 'Yirukankiye munce za Kacyiru', '2026-06-19 10:03:15', '2026-06-19 10:03:15'),
 	(2, 'Short Accident in Parking', 'Umu cliya yagonze undi icyakora Police intervene and solved issue', 8, 3, 1, 'low', 'resolved', '2026-06-19 12:19:00', -1.5463107, 30.0601837, 'Conventional Center Parking ya Kabiri', '2026-06-19 10:24:02', '2026-06-19 10:24:20'),
@@ -183,9 +184,11 @@ CREATE TABLE IF NOT EXISTS `password_resets` (
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   PRIMARY KEY (`id`),
   KEY `idx_email` (`email`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table guardreport_db.password_resets: ~0 rows (approximately)
+-- Dumping data for table guardreport_db.password_resets: ~1 rows (approximately)
+REPLACE INTO `password_resets` (`id`, `email`, `otp`, `expires_at`, `used`, `created_at`) VALUES
+	(2, 'info.abaremy@gmail.com', '796266', '2026-06-20 19:38:28', 1, '2026-06-20 17:23:28');
 
 -- Dumping structure for table guardreport_db.permissions
 CREATE TABLE IF NOT EXISTS `permissions` (
@@ -196,7 +199,7 @@ CREATE TABLE IF NOT EXISTS `permissions` (
   `description` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `key` (`key`)
-) ENGINE=InnoDB AUTO_INCREMENT=30 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=31 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Dumping data for table guardreport_db.permissions: ~29 rows (approximately)
 REPLACE INTO `permissions` (`id`, `key`, `name`, `module`, `description`) VALUES
@@ -240,7 +243,7 @@ CREATE TABLE IF NOT EXISTS `role_permissions` (
   CONSTRAINT `role_permissions_ibfk_2` FOREIGN KEY (`permission_id`) REFERENCES `permissions` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table guardreport_db.role_permissions: ~36 rows (approximately)
+-- Dumping data for table guardreport_db.role_permissions: ~40 rows (approximately)
 REPLACE INTO `role_permissions` (`role_id`, `permission_id`) VALUES
 	(2, 1),
 	(2, 2),
@@ -321,7 +324,7 @@ CREATE TABLE IF NOT EXISTS `shifts` (
   CONSTRAINT `shifts_ibfk_1` FOREIGN KEY (`guard_id`) REFERENCES `users` (`id`) ON UPDATE CASCADE,
   CONSTRAINT `shifts_ibfk_2` FOREIGN KEY (`site_id`) REFERENCES `sites` (`id`) ON UPDATE CASCADE,
   CONSTRAINT `shifts_ibfk_3` FOREIGN KEY (`created_by`) REFERENCES `users` (`id`) ON DELETE SET NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Dumping data for table guardreport_db.shifts: ~0 rows (approximately)
 REPLACE INTO `shifts` (`id`, `guard_id`, `site_id`, `start_time`, `end_time`, `status`, `notes`, `created_by`, `created_at`, `updated_at`) VALUES
@@ -364,7 +367,7 @@ CREATE TABLE IF NOT EXISTS `system_settings` (
   PRIMARY KEY (`key`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table guardreport_db.system_settings: ~6 rows (approximately)
+-- Dumping data for table guardreport_db.system_settings: ~17 rows (approximately)
 REPLACE INTO `system_settings` (`key`, `value`, `type`, `label`, `updated_at`) VALUES
 	('allowed_file_ext', '["jpg","jpeg","png","gif","pdf","doc","docx"]', 'json', 'Allowed Upload Extensions', '2026-06-17 19:00:27'),
 	('allowed_file_types', '["jpg","jpeg","png","pdf","mp4"]', 'json', 'Allowed File Extensions', '2026-06-20 03:53:26'),
@@ -383,6 +386,38 @@ REPLACE INTO `system_settings` (`key`, `value`, `type`, `label`, `updated_at`) V
 	('password_min_length', '8', 'integer', 'Minimum Password Length', '2026-06-20 03:53:26'),
 	('report_footer_text', 'Confidential — for internal use only', 'string', 'Report Footer / Confidentiality Note', '2026-06-20 03:53:26'),
 	('session_timeout_minutes', '60', 'integer', 'Session Timeout (minutes)', '2026-06-20 03:53:26');
+
+-- Dumping structure for table guardreport_db.user_notification_settings
+CREATE TABLE IF NOT EXISTS `user_notification_settings` (
+  `user_id` int(10) unsigned NOT NULL,
+  `email_login` tinyint(1) NOT NULL DEFAULT 1,
+  `email_incident_updates` tinyint(1) NOT NULL DEFAULT 1,
+  `email_shift_reminders` tinyint(1) NOT NULL DEFAULT 1,
+  `push_new_incidents` tinyint(1) NOT NULL DEFAULT 0,
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  PRIMARY KEY (`user_id`),
+  CONSTRAINT `user_notification_settings_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Dumping data for table guardreport_db.user_notification_settings: ~0 rows (approximately)
+REPLACE INTO `user_notification_settings` (`user_id`, `email_login`, `email_incident_updates`, `email_shift_reminders`, `push_new_incidents`, `updated_at`) VALUES
+	(1, 1, 1, 1, 1, '2026-06-20 03:48:05');
+
+-- Dumping structure for table guardreport_db.user_settings
+CREATE TABLE IF NOT EXISTS `user_settings` (
+  `user_id` int(10) unsigned NOT NULL,
+  `language` varchar(5) NOT NULL DEFAULT 'en',
+  `timezone` varchar(60) NOT NULL DEFAULT 'Africa/Kigali',
+  `date_format` varchar(20) NOT NULL DEFAULT 'Y-m-d',
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  PRIMARY KEY (`user_id`),
+  CONSTRAINT `user_settings_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Dumping data for table guardreport_db.user_settings: ~0 rows (approximately)
+REPLACE INTO `user_settings` (`user_id`, `language`, `timezone`, `date_format`, `created_at`, `updated_at`) VALUES
+	(1, 'en', 'Africa/Kigali', 'Y-m-d', '2026-06-20 03:47:37', '2026-06-20 03:47:37');
 
 -- Dumping structure for table guardreport_db.users
 CREATE TABLE IF NOT EXISTS `users` (
@@ -418,10 +453,10 @@ CREATE TABLE IF NOT EXISTS `users` (
 
 -- Dumping data for table guardreport_db.users: ~4 rows (approximately)
 REPLACE INTO `users` (`id`, `firstname`, `lastname`, `username`, `email`, `phone`, `phone_alt`, `password`, `role_id`, `account_status`, `is_super_admin`, `photo`, `bio`, `gender`, `date_of_birth`, `address`, `otp_code`, `otp_expiry`, `last_login`, `created_by`, `created_at`, `updated_at`) VALUES
-	(1, 'System', 'Admin', 'superadmin', 'admin@guardreport.rw', NULL, NULL, '$2y$10$cTKQFPz493I5.QQkU1MwzOW.YLOdQKqnHbWzpsnO13eI54jLUnCt6', 1, 'active', 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2026-06-20 05:43:10', NULL, '2026-06-17 19:00:27', '2026-06-20 03:43:10'),
+	(1, 'System', 'Admin', 'superadmin', 'admin@guardreport.rw', NULL, NULL, '$2y$10$cTKQFPz493I5.QQkU1MwzOW.YLOdQKqnHbWzpsnO13eI54jLUnCt6', 1, 'active', 1, 'users/05d39fa6f455_1.jpg', NULL, NULL, NULL, NULL, NULL, NULL, '2026-06-20 17:29:48', NULL, '2026-06-17 19:00:27', '2026-06-20 15:29:48'),
 	(2, 'MUNANA', 'Issa', NULL, 'supervisor@guardrep.com', '25784666312', NULL, '$2y$10$t2iSTI5vKqaFzzVWSj7H2eDYtcmeLDhXv6htkfBcmPtw0zauB7zim', 3, 'active', 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2026-06-19 12:40:47', 1, '2026-06-19 10:09:49', '2026-06-19 10:40:47'),
 	(3, 'Adele', 'Mubano', NULL, 'adele@gmail.com', '07855544', NULL, '$2y$10$4oINP6UaGIJNbrWnuvq.u.ImRQSEMfClsj9irpbn32H2zuOC0NGPO', 4, 'active', 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2026-06-19 12:45:36', 1, '2026-06-19 10:26:44', '2026-06-19 10:45:36'),
-	(4, 'MUSIRIKARE', 'Fabrice', NULL, 'musifab@gmail.com', '0788998855', NULL, '$2y$10$WnKfPGZMT8aPSaeneKyR/Oeyi2LWsUApODCrclo0kftlR2rKU6wMW', 4, 'active', 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, '2026-06-19 10:27:45', '2026-06-19 10:27:45');
+	(4, 'MUSIRIKARE', 'Fabrice', 'musirikare', 'info.abaremy@gmail.com', '0788998855', NULL, '$2y$10$Sd1VbnJAEwqFhK8T8JYz/eG1j7J0Evdun3VtWooVV/LRFD.K34LwO', 4, 'active', 0, 'users/2fbd4edfaedc_4.jpg', '', '', '1999-06-20', '', NULL, NULL, '2026-06-20 19:24:36', 1, '2026-06-19 10:27:45', '2026-06-20 17:24:36');
 
 /*!40103 SET TIME_ZONE=IFNULL(@OLD_TIME_ZONE, 'system') */;
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;

@@ -5,6 +5,11 @@
  * The getUserByEmailOrPhone and getUserById methods also fetch the user's role and permissions for easy access during authentication and authorization checks.
  * The createUser and updateUser methods log actions to the activity_log table for auditing purposes. The deleteUser method prevents deletion of super-admin accounts.
  * The getAllUsers method supports filtering by status, role, and search term across multiple fields
+ *
+ * SECURITY FIX (see consumeOtpAndResetPassword): the forgot-password flow's final
+ * step previously changed the password without ever re-checking the OTP — anyone
+ * who knew a user's email could reset their password with no code at all. The OTP
+ * is now verified and consumed atomically at the moment the password is changed.
 */
 class UserModel {
     private PDO    $db;
@@ -168,7 +173,7 @@ class UserModel {
         return $s->fetch() ?: null;
     }
 
-    /* ── OTP ──────────────────────────────────────────── */
+    /* ── OTP (registration) ────────────────────────────── */
     public function updateOtp(int $id, string $otp, string $expiry): void {
         $this->db->prepare("UPDATE {$this->t} SET otp_code=:o,otp_expiry=:e WHERE id=:id")
                  ->execute([':o' => $otp, ':e' => $expiry, ':id' => $id]);
@@ -179,27 +184,63 @@ class UserModel {
         $r = $s->fetch();
         return $r && $r['otp_code'] === $otp && strtotime($r['otp_expiry']) > time();
     }
+
+    /* ── Password reset (forgot-password flow) ─────────── */
+
+    /** Used directly by admin-initiated password changes elsewhere — NOT by the forgot-password flow (see below). */
     public function updatePassword(string $email, string $pwd): bool {
         return $this->db->prepare(
             "UPDATE {$this->t} SET password=:p WHERE email=:e"
         )->execute([':p' => password_hash($pwd, PASSWORD_BCRYPT), ':e' => $email]);
     }
+
     public function createPasswordReset(string $email, string $otp, string $expiry): void {
         $this->db->prepare("DELETE FROM password_resets WHERE email=:e")->execute([':e' => $email]);
         $this->db->prepare("INSERT INTO password_resets (email,otp,expires_at) VALUES (:e,:o,:x)")
                  ->execute([':e' => $email, ':o' => $otp, ':x' => $expiry]);
     }
+
+    /**
+     * Read-only validity check — used by the "Verify Code" UI step so the
+     * person gets immediate feedback. Does NOT consume the OTP, because the
+     * actual password change (consumeOtpAndResetPassword, below) re-checks
+     * and consumes it itself. This is what closes the bypass: the API no
+     * longer trusts that a prior verify-otp call happened.
+     */
     public function verifyOtp(string $email, string $otp): bool {
         $s = $this->db->prepare(
             "SELECT id FROM password_resets WHERE email=:e AND otp=:o AND expires_at>NOW() AND used=0 LIMIT 1"
         );
         $s->execute([':e' => $email, ':o' => $otp]);
-        $r = $s->fetch();
-        if ($r) {
-            $this->db->prepare("UPDATE password_resets SET used=1 WHERE id=:id")->execute([':id' => $r['id']]);
+        return (bool)$s->fetch();
+    }
+
+    /**
+     * The only path that actually changes a password during the forgot-password
+     * flow. Validates the OTP and marks it used in the same transaction as the
+     * password update, so a request to reset-password can never succeed without
+     * a currently-valid, unused, non-expired code for that exact email.
+     */
+    public function consumeOtpAndResetPassword(string $email, string $otp, string $newHashedPassword): bool {
+        $s = $this->db->prepare(
+            "SELECT id FROM password_resets WHERE email=:e AND otp=:o AND expires_at>NOW() AND used=0 LIMIT 1"
+        );
+        $s->execute([':e' => $email, ':o' => $otp]);
+        $row = $s->fetch();
+        if (!$row) return false;
+
+        $this->db->beginTransaction();
+        try {
+            $this->db->prepare("UPDATE password_resets SET used=1 WHERE id=:id")
+                     ->execute([':id' => $row['id']]);
+            $this->db->prepare("UPDATE {$this->t} SET password=:p WHERE email=:e")
+                     ->execute([':p' => $newHashedPassword, ':e' => $email]);
+            $this->db->commit();
             return true;
+        } catch (Exception $e) {
+            $this->db->rollBack();
+            throw $e;
         }
-        return false;
     }
 
     /* ── Stats ────────────────────────────────────────── */

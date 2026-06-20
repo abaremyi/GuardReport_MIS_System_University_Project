@@ -2,6 +2,12 @@
 /**
  * GuardReport — Auth Controller
  * File: modules/Authentication/controllers/AuthController.php
+ *
+ * CHANGE LOG:
+ *  - resetPassword() previously accepted $otp but never validated it before
+ *    changing the password — anyone who knew a user's email could reset it
+ *    with no code at all. It now calls UserModel::consumeOtpAndResetPassword(),
+ *    which validates + consumes the OTP and updates the password atomically.
  */
 require_once dirname(__DIR__, 3) . '/config/config.php';
 require_once dirname(__DIR__, 3) . '/config/database.php';
@@ -111,21 +117,31 @@ class AuthController {
             $this->um->createPasswordReset($email, $otp, $expiry);
             $this->mail($email, $user['firstname'], APP_NAME . ' — Password Reset OTP', $this->otpTpl($user['firstname'], $otp));
         }
+        // Always the same response whether or not the email is registered —
+        // this is intentional, it stops attackers from using this endpoint to
+        // discover which emails exist in the system. Don't change it.
         return ['success' => true, 'message' => 'If that email is registered, an OTP has been sent.'];
     }
 
     public function verifyOtp(string $email, string $otp): array {
+        // Read-only check for the UI's "Verify Code" step. The OTP is not
+        // consumed here — see resetPassword()/consumeOtpAndResetPassword().
         return $this->um->verifyOtp($email, $otp)
             ? ['success' => true,  'message' => 'OTP verified.']
             : ['success' => false, 'message' => 'Invalid or expired OTP.'];
     }
 
     public function resetPassword(string $email, string $otp, string $pwd, string $confirm): array {
+        if (empty($otp))        return ['success' => false, 'message' => 'Reset code is required.'];
         if (strlen($pwd) < 8)  return ['success' => false, 'message' => 'Password must be ≥ 8 characters.'];
         if ($pwd !== $confirm) return ['success' => false, 'message' => 'Passwords do not match.'];
-        return $this->um->updatePassword($email, $pwd)
+
+        $hashed = password_hash($pwd, PASSWORD_BCRYPT);
+        $ok = $this->um->consumeOtpAndResetPassword($email, $otp, $hashed);
+
+        return $ok
             ? ['success' => true,  'message' => 'Password reset. You may now log in.']
-            : ['success' => false, 'message' => 'Reset failed. Please try again.'];
+            : ['success' => false, 'message' => 'Invalid or expired reset code. Please request a new one.'];
     }
 
     public function logout(): array {

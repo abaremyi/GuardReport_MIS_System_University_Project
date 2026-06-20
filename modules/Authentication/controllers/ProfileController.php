@@ -9,11 +9,9 @@ require_once ROOT_PATH . '/helpers/UploadHelper.php';
 
 class ProfileController {
     private $profileModel;
-    private $uploadHelper;
 
     public function __construct() {
         $this->profileModel = new ProfileModel();
-        $this->uploadHelper = new UploadHelper();
     }
 
     public function getProfile($userId) {
@@ -45,12 +43,12 @@ class ProfileController {
             }
 
             if ($files && isset($files['avatar']) && $files['avatar']['error'] === UPLOAD_ERR_OK) {
-                $uploadResult = $this->uploadHelper->uploadFile($files['avatar'], 'users');
+                $uploadResult = UploadHelper::uploadUserPhoto($files['avatar'], $userId);
                 if ($uploadResult['success']) {
                     if (!empty($currentUser['photo'])) {
-                        $this->uploadHelper->deleteFile($currentUser['photo']);
+                        UploadHelper::deleteFile($currentUser['photo']);
                     }
-                    $data['photo'] = $uploadResult['filepath'];
+                    $data['photo'] = $uploadResult['file_path'];
                 }
             }
 
@@ -121,21 +119,21 @@ class ProfileController {
             }
 
             $currentUser = $this->profileModel->getProfile($userId);
-            $uploadResult = $this->uploadHelper->uploadFile($files['avatar'], 'users');
+            $uploadResult = UploadHelper::uploadUserPhoto($files['avatar'], $userId);
 
             if (!$uploadResult['success']) {
-                throw new Exception($uploadResult['message']);
+                throw new Exception($uploadResult['message'] ?? 'Failed to upload photo');
             }
 
             if (!empty($currentUser['photo'])) {
-                $this->uploadHelper->deleteFile($currentUser['photo']);
+                UploadHelper::deleteFile($currentUser['photo']);
             }
 
-            $result = $this->profileModel->updateProfile($userId, ['photo' => $uploadResult['filepath']]);
+            $result = $this->profileModel->updateProfile($userId, ['photo' => $uploadResult['file_path']]);
 
             return [
                 'success' => $result,
-                'filepath' => $uploadResult['filepath'],
+                'filepath' => $uploadResult['file_path'],
                 'message' => 'Avatar uploaded successfully'
             ];
         } catch (Exception $e) {
