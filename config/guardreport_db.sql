@@ -35,14 +35,17 @@ CREATE TABLE IF NOT EXISTS `activity_log` (
   CONSTRAINT `activity_log_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE SET NULL
 ) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table guardreport_db.activity_log: ~0 rows (approximately)
+-- Dumping data for table guardreport_db.activity_log: ~6 rows (approximately)
 REPLACE INTO `activity_log` (`id`, `user_id`, `action`, `module`, `description`, `ip_address`, `created_at`) VALUES
 	(1, 1, 'create', 'incidents', 'Incident #1 submitted: Umukriya yibye ipine', '::1', '2026-06-19 10:03:15'),
 	(2, 2, 'create', 'users', 'User account created', '::1', '2026-06-19 10:09:49'),
 	(3, 1, 'create', 'incidents', 'Incident #2 submitted: Short Accident in Parking', '::1', '2026-06-19 10:24:02'),
 	(4, 1, 'status_change', 'incidents', 'Incident #2: open → resolved', '::1', '2026-06-19 10:24:20'),
 	(5, 3, 'create', 'users', 'User account created', '::1', '2026-06-19 10:26:44'),
-	(6, 4, 'create', 'users', 'User account created', '::1', '2026-06-19 10:27:45');
+	(6, 4, 'create', 'users', 'User account created', '::1', '2026-06-19 10:27:45'),
+	(7, 3, 'create', 'incidents', 'Incident #3 submitted: Fire Extinguisher Fall down', '::1', '2026-06-19 10:48:51'),
+	(8, 1, 'settings_update', 'settings', 'Updated 14 system setting(s)', '::1', '2026-06-20 03:53:26'),
+	(9, 1, 'report_export', 'reports', 'Exported incidents report (3 rows)', '::1', '2026-06-20 04:01:57');
 
 -- Dumping structure for table guardreport_db.incident_evidence
 CREATE TABLE IF NOT EXISTS `incident_evidence` (
@@ -61,9 +64,10 @@ CREATE TABLE IF NOT EXISTS `incident_evidence` (
   CONSTRAINT `incident_evidence_ibfk_2` FOREIGN KEY (`uploaded_by`) REFERENCES `users` (`id`) ON UPDATE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table guardreport_db.incident_evidence: ~0 rows (approximately)
+-- Dumping data for table guardreport_db.incident_evidence: ~1 rows (approximately)
 REPLACE INTO `incident_evidence` (`id`, `incident_id`, `file_path`, `file_name`, `file_type`, `file_size`, `uploaded_by`, `created_at`) VALUES
-	(1, 2, 'evidence/2/6518e88090b247d8_1781864642.pdf', 'Letter.pdf', 'application/pdf', 115567, 1, '2026-06-19 10:24:02');
+	(1, 2, 'evidence/2/6518e88090b247d8_1781864642.pdf', 'Letter.pdf', 'application/pdf', 115567, 1, '2026-06-19 10:24:02'),
+	(2, 3, 'evidence/3/6442a589d9511ba7_1781866131.jpg', 'fire.jpg', 'image/jpeg', 23077, 3, '2026-06-19 10:48:51');
 
 -- Dumping structure for table guardreport_db.incident_types
 CREATE TABLE IF NOT EXISTS `incident_types` (
@@ -108,11 +112,12 @@ CREATE TABLE IF NOT EXISTS `incident_updates` (
   CONSTRAINT `incident_updates_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON UPDATE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table guardreport_db.incident_updates: ~0 rows (approximately)
+-- Dumping data for table guardreport_db.incident_updates: ~3 rows (approximately)
 REPLACE INTO `incident_updates` (`id`, `incident_id`, `user_id`, `old_status`, `new_status`, `notes`, `created_at`) VALUES
 	(1, 1, 1, NULL, 'open', 'Incident submitted', '2026-06-19 10:03:15'),
 	(2, 2, 1, NULL, 'open', 'Incident submitted', '2026-06-19 10:24:02'),
-	(3, 2, 1, 'open', 'resolved', '', '2026-06-19 10:24:20');
+	(3, 2, 1, 'open', 'resolved', '', '2026-06-19 10:24:20'),
+	(4, 3, 3, NULL, 'open', 'Incident submitted', '2026-06-19 10:48:51');
 
 -- Dumping structure for table guardreport_db.incidents
 CREATE TABLE IF NOT EXISTS `incidents` (
@@ -142,10 +147,11 @@ CREATE TABLE IF NOT EXISTS `incidents` (
   CONSTRAINT `incidents_ibfk_3` FOREIGN KEY (`reported_by`) REFERENCES `users` (`id`) ON UPDATE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table guardreport_db.incidents: ~0 rows (approximately)
+-- Dumping data for table guardreport_db.incidents: ~2 rows (approximately)
 REPLACE INTO `incidents` (`id`, `title`, `description`, `type_id`, `site_id`, `reported_by`, `severity`, `status`, `incident_date`, `latitude`, `longitude`, `location_note`, `created_at`, `updated_at`) VALUES
 	(1, 'Umukriya yibye ipine', 'Yaritwaye yigize nkuwishyuye ariko ahita yirukanka', 1, 2, 1, 'high', 'open', '2026-06-19 12:01:00', -1.9463107, 30.0601837, 'Yirukankiye munce za Kacyiru', '2026-06-19 10:03:15', '2026-06-19 10:03:15'),
-	(2, 'Short Accident in Parking', 'Umu cliya yagonze undi icyakora Police intervene and solved issue', 8, 3, 1, 'low', 'resolved', '2026-06-19 12:19:00', -1.5463107, 30.0601837, 'Conventional Center Parking ya Kabiri', '2026-06-19 10:24:02', '2026-06-19 10:24:20');
+	(2, 'Short Accident in Parking', 'Umu cliya yagonze undi icyakora Police intervene and solved issue', 8, 3, 1, 'low', 'resolved', '2026-06-19 12:19:00', -1.5463107, 30.0601837, 'Conventional Center Parking ya Kabiri', '2026-06-19 10:24:02', '2026-06-19 10:24:20'),
+	(3, 'Fire Extinguisher Fall down', 'There is a need to repair the Fire extinguisher hanger', 4, 1, 3, 'critical', 'open', '2026-06-19 12:45:00', -1.3463107, 30.0101837, 'Convention center', '2026-06-19 10:48:51', '2026-06-19 10:48:51');
 
 -- Dumping structure for table guardreport_db.notifications
 CREATE TABLE IF NOT EXISTS `notifications` (
@@ -259,15 +265,19 @@ REPLACE INTO `role_permissions` (`role_id`, `permission_id`) VALUES
 	(2, 26),
 	(2, 27),
 	(2, 28),
+	(2, 29),
 	(3, 1),
 	(3, 3),
 	(3, 5),
 	(3, 6),
 	(3, 7),
 	(3, 8),
+	(3, 11),
 	(3, 12),
+	(3, 14),
 	(3, 16),
 	(3, 26),
+	(3, 27),
 	(4, 1),
 	(4, 2),
 	(4, 6),
@@ -314,6 +324,8 @@ CREATE TABLE IF NOT EXISTS `shifts` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Dumping data for table guardreport_db.shifts: ~0 rows (approximately)
+REPLACE INTO `shifts` (`id`, `guard_id`, `site_id`, `start_time`, `end_time`, `status`, `notes`, `created_by`, `created_at`, `updated_at`) VALUES
+	(1, 3, 3, '2026-06-19 18:00:00', '2026-06-20 18:00:00', 'active', 'Please follow this', 1, '2026-06-19 20:07:13', '2026-06-19 20:07:33');
 
 -- Dumping structure for table guardreport_db.sites
 CREATE TABLE IF NOT EXISTS `sites` (
@@ -355,11 +367,22 @@ CREATE TABLE IF NOT EXISTS `system_settings` (
 -- Dumping data for table guardreport_db.system_settings: ~6 rows (approximately)
 REPLACE INTO `system_settings` (`key`, `value`, `type`, `label`, `updated_at`) VALUES
 	('allowed_file_ext', '["jpg","jpeg","png","gif","pdf","doc","docx"]', 'json', 'Allowed Upload Extensions', '2026-06-17 19:00:27'),
-	('app_name', 'GuardReport', 'string', 'Application Name', '2026-06-17 19:00:27'),
-	('app_timezone', 'Africa/Kigali', 'string', 'Server Timezone', '2026-06-17 19:00:27'),
-	('incident_auto_close_days', '30', 'integer', 'Auto-close resolved incidents after N days', '2026-06-17 19:00:27'),
+	('allowed_file_types', '["jpg","jpeg","png","pdf","mp4"]', 'json', 'Allowed File Extensions', '2026-06-20 03:53:26'),
+	('app_name', 'GuardReport', 'string', 'Application Name', '2026-06-20 03:53:26'),
+	('app_timezone', 'Africa/Kigali', 'string', 'Server Timezone', '2026-06-20 03:53:26'),
+	('company_name', 'TopSec', 'string', 'Company / Agency Name', '2026-06-20 03:53:26'),
+	('date_format', 'Y-m-d', 'string', 'Default Date Format', '2026-06-20 03:53:26'),
+	('default_incident_severity', 'medium', 'string', 'Default Severity for New Incidents', '2026-06-20 03:53:26'),
+	('force_password_change_days', '0', 'integer', 'Force Password Change Every (days, 0 = never)', '2026-06-20 03:53:26'),
+	('incident_auto_close_days', '30', 'integer', 'Auto-close resolved incidents after N days', '2026-06-20 03:53:26'),
 	('max_file_size', '10485760', 'integer', 'Max Upload Size (bytes)', '2026-06-17 19:00:27'),
-	('notify_on_submit', '1', 'boolean', 'Notify supervisors on new incident', '2026-06-17 19:00:27');
+	('max_upload_size_mb', '10', 'integer', 'Max Evidence File Size (MB)', '2026-06-20 03:53:26'),
+	('notify_on_incident_submit', '1', 'boolean', 'Notify supervisors when a new incident is submitted', '2026-06-20 03:53:26'),
+	('notify_on_shift_reminder', '1', 'boolean', 'Send shift reminder notifications', '2026-06-20 03:53:26'),
+	('notify_on_submit', '1', 'boolean', 'Notify supervisors on new incident', '2026-06-17 19:00:27'),
+	('password_min_length', '8', 'integer', 'Minimum Password Length', '2026-06-20 03:53:26'),
+	('report_footer_text', 'Confidential — for internal use only', 'string', 'Report Footer / Confidentiality Note', '2026-06-20 03:53:26'),
+	('session_timeout_minutes', '60', 'integer', 'Session Timeout (minutes)', '2026-06-20 03:53:26');
 
 -- Dumping structure for table guardreport_db.users
 CREATE TABLE IF NOT EXISTS `users` (
@@ -395,9 +418,9 @@ CREATE TABLE IF NOT EXISTS `users` (
 
 -- Dumping data for table guardreport_db.users: ~4 rows (approximately)
 REPLACE INTO `users` (`id`, `firstname`, `lastname`, `username`, `email`, `phone`, `phone_alt`, `password`, `role_id`, `account_status`, `is_super_admin`, `photo`, `bio`, `gender`, `date_of_birth`, `address`, `otp_code`, `otp_expiry`, `last_login`, `created_by`, `created_at`, `updated_at`) VALUES
-	(1, 'System', 'Admin', 'superadmin', 'admin@guardreport.rw', NULL, NULL, '$2y$10$cTKQFPz493I5.QQkU1MwzOW.YLOdQKqnHbWzpsnO13eI54jLUnCt6', 1, 'active', 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2026-06-19 11:54:17', NULL, '2026-06-17 19:00:27', '2026-06-19 09:54:17'),
-	(2, 'MUNANA', 'Issa', NULL, 'supervisor@guardrep.com', '25784666312', NULL, '$2y$10$t2iSTI5vKqaFzzVWSj7H2eDYtcmeLDhXv6htkfBcmPtw0zauB7zim', 3, 'active', 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, '2026-06-19 10:09:49', '2026-06-19 10:09:49'),
-	(3, 'Adele', 'Mubano', NULL, 'adele@gmail.com', '07855544', NULL, '$2y$10$4oINP6UaGIJNbrWnuvq.u.ImRQSEMfClsj9irpbn32H2zuOC0NGPO', 4, 'active', 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2026-06-19 12:29:21', 1, '2026-06-19 10:26:44', '2026-06-19 10:29:21'),
+	(1, 'System', 'Admin', 'superadmin', 'admin@guardreport.rw', NULL, NULL, '$2y$10$cTKQFPz493I5.QQkU1MwzOW.YLOdQKqnHbWzpsnO13eI54jLUnCt6', 1, 'active', 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2026-06-20 05:43:10', NULL, '2026-06-17 19:00:27', '2026-06-20 03:43:10'),
+	(2, 'MUNANA', 'Issa', NULL, 'supervisor@guardrep.com', '25784666312', NULL, '$2y$10$t2iSTI5vKqaFzzVWSj7H2eDYtcmeLDhXv6htkfBcmPtw0zauB7zim', 3, 'active', 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2026-06-19 12:40:47', 1, '2026-06-19 10:09:49', '2026-06-19 10:40:47'),
+	(3, 'Adele', 'Mubano', NULL, 'adele@gmail.com', '07855544', NULL, '$2y$10$4oINP6UaGIJNbrWnuvq.u.ImRQSEMfClsj9irpbn32H2zuOC0NGPO', 4, 'active', 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2026-06-19 12:45:36', 1, '2026-06-19 10:26:44', '2026-06-19 10:45:36'),
 	(4, 'MUSIRIKARE', 'Fabrice', NULL, 'musifab@gmail.com', '0788998855', NULL, '$2y$10$WnKfPGZMT8aPSaeneKyR/Oeyi2LWsUApODCrclo0kftlR2rKU6wMW', 4, 'active', 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, '2026-06-19 10:27:45', '2026-06-19 10:27:45');
 
 /*!40103 SET TIME_ZONE=IFNULL(@OLD_TIME_ZONE, 'system') */;
