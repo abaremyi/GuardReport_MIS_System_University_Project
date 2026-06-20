@@ -124,10 +124,19 @@ class ComposerStaticInit20fad51902f91e7fd3039e016a6556b5
 
     public static $classMap = array (
         'Attribute' => __DIR__ . '/..' . '/symfony/polyfill-php80/Resources/stubs/Attribute.php',
+        'AuthController' => __DIR__ . '/../..' . '/modules/Authentication/controllers/AuthController.php',
+        'AuthMiddleware' => __DIR__ . '/../..' . '/helpers/AuthMiddleware.php',
         'Composer\\InstalledVersions' => __DIR__ . '/..' . '/composer/InstalledVersions.php',
+        'IncidentController' => __DIR__ . '/../..' . '/modules/Incidents/controllers/IncidentController.php',
+        'IncidentModel' => __DIR__ . '/../..' . '/modules/Incidents/models/IncidentModel.php',
+        'JWTHandler' => __DIR__ . '/../..' . '/helpers/JWTHandler.php',
         'PhpToken' => __DIR__ . '/..' . '/symfony/polyfill-php80/Resources/stubs/PhpToken.php',
+        'ShiftModel' => __DIR__ . '/../..' . '/modules/Shifts/models/ShiftModel.php',
+        'SiteModel' => __DIR__ . '/../..' . '/modules/Sites/models/SiteModel.php',
         'Stringable' => __DIR__ . '/..' . '/symfony/polyfill-php80/Resources/stubs/Stringable.php',
         'UnhandledMatchError' => __DIR__ . '/..' . '/symfony/polyfill-php80/Resources/stubs/UnhandledMatchError.php',
+        'UploadHelper' => __DIR__ . '/../..' . '/helpers/UploadHelper.php',
+        'UserModel' => __DIR__ . '/../..' . '/modules/Authentication/models/UserModel.php',
         'ValueError' => __DIR__ . '/..' . '/symfony/polyfill-php80/Resources/stubs/ValueError.php',
     );
 

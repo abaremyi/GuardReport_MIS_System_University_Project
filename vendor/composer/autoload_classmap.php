@@ -7,9 +7,18 @@ $baseDir = dirname($vendorDir);
 
 return array(
     'Attribute' => $vendorDir . '/symfony/polyfill-php80/Resources/stubs/Attribute.php',
+    'AuthController' => $baseDir . '/modules/Authentication/controllers/AuthController.php',
+    'AuthMiddleware' => $baseDir . '/helpers/AuthMiddleware.php',
     'Composer\\InstalledVersions' => $vendorDir . '/composer/InstalledVersions.php',
+    'IncidentController' => $baseDir . '/modules/Incidents/controllers/IncidentController.php',
+    'IncidentModel' => $baseDir . '/modules/Incidents/models/IncidentModel.php',
+    'JWTHandler' => $baseDir . '/helpers/JWTHandler.php',
     'PhpToken' => $vendorDir . '/symfony/polyfill-php80/Resources/stubs/PhpToken.php',
+    'ShiftModel' => $baseDir . '/modules/Shifts/models/ShiftModel.php',
+    'SiteModel' => $baseDir . '/modules/Sites/models/SiteModel.php',
     'Stringable' => $vendorDir . '/symfony/polyfill-php80/Resources/stubs/Stringable.php',
     'UnhandledMatchError' => $vendorDir . '/symfony/polyfill-php80/Resources/stubs/UnhandledMatchError.php',
+    'UploadHelper' => $baseDir . '/helpers/UploadHelper.php',
+    'UserModel' => $baseDir . '/modules/Authentication/models/UserModel.php',
     'ValueError' => $vendorDir . '/symfony/polyfill-php80/Resources/stubs/ValueError.php',
 );

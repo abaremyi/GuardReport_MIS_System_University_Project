@@ -2,6 +2,11 @@
 /**
  * GuardReport — Admin Navigation
  * File: layouts/admin-nav.php
+ *
+ * CHANGE LOG:
+ *  - Removed "Add User" submenu link — user creation now happens inline
+ *    on the Users page itself (modal), matching the Shifts/Roles pattern.
+ *  - "Reports" converted to a submenu: Overview + Report Builder.
  */
 $navItems = [
   ['label'=>'Dashboard', 'url'=>url('admin/dashboard'),  'icon'=>'ri-dashboard-3-line',    'page'=>'dashboard', 'perm'=>''],
@@ -13,11 +18,15 @@ $navItems = [
   ],
   ['label'=>'Sites',    'url'=>url('admin/sites'),       'icon'=>'ri-building-2-line',       'page'=>'sites',    'perm'=>'sites.view'],
   ['label'=>'Shifts',   'url'=>url('admin/shifts'),      'icon'=>'ri-calendar-schedule-line','page'=>'shifts',   'perm'=>'shifts.view'],
-  ['label'=>'Reports',  'url'=>url('admin/reports'),     'icon'=>'ri-bar-chart-box-line',    'page'=>'reports',  'perm'=>'reports.view'],
+  ['label'=>'Reports',  'url'=>'#',                      'icon'=>'ri-bar-chart-box-line',    'page'=>'reports',  'perm'=>'reports.view',
+    'submenu'=>[
+      ['label'=>'Overview',        'url'=>url('admin/reports'),         'icon'=>'ri-pie-chart-2-line'],
+      ['label'=>'Report Builder',  'url'=>url('admin/reports/builder'), 'icon'=>'ri-file-chart-line'],
+    ]
+  ],
   ['label'=>'Admin',    'url'=>'#',                      'icon'=>'ri-team-line',             'page'=>'users',    'perm'=>'users.view',
     'submenu'=>[
       ['label'=>'Users',            'url'=>url('admin/users'),           'icon'=>'ri-group-line'],
-      ['label'=>'Add User',         'url'=>url('admin/users/add'),       'icon'=>'ri-user-add-line'],
       ['label'=>'Roles',            'url'=>url('admin/roles'),           'icon'=>'ri-shield-check-line'],
     ]
   ],

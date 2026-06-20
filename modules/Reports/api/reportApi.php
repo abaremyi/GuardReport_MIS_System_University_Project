@@ -1,5 +1,14 @@
 <?php
-/** GuardReport — Report API | File: modules/Reports/api/reportApi.php */
+/**
+ * GuardReport — Report API
+ * File: modules/Reports/api/reportApi.php
+ *
+ * CHANGE LOG:
+ *  - Added 'meta', 'data' (GET) and 'export' (POST) actions for the new
+ *    Report Builder, routed through ReportBuilderController. Folded into
+ *    this existing file (rather than a new reportBuilderApi.php) so no
+ *    new route has to be registered — /api/reports already works.
+ */
 header('Content-Type: application/json');
 header('Access-Control-Allow-Credentials: true');
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') { http_response_code(200); exit; }
@@ -8,14 +17,60 @@ require_once dirname(__DIR__, 3) . '/config/paths.php';
 require_once dirname(__DIR__, 3) . '/config/config.php';
 require_once dirname(__DIR__, 3) . '/config/database.php';
 require_once dirname(__DIR__, 3) . '/helpers/AuthMiddleware.php';
+require_once dirname(__DIR__, 1) . '/controllers/ReportBuilderController.php';
 
 $method = $_SERVER['REQUEST_METHOD'];
 $action = $_GET['action'] ?? '';
 $auth   = new AuthMiddleware();
 
 try {
+    /* ── POST actions (Report Builder export) ───────────────────── */
+    if ($method === 'POST') {
+        switch ($action) {
+            case 'export':
+                $user  = $auth->requireAuth(['reports.export']);
+                $rbCtrl = new ReportBuilderController();
+                $input  = json_decode(file_get_contents('php://input'), true) ?: [];
+                $result = $rbCtrl->export(
+                    $input['type'] ?? '',
+                    (array)($input['fields'] ?? []),
+                    (array)($input['filters'] ?? []),
+                    (int)$user->user_id
+                );
+                echo json_encode(['success' => true, 'data' => $result]);
+                break;
+            default:
+                http_response_code(404);
+                echo json_encode(['success' => false, 'message' => 'Unknown action']);
+        }
+        exit;
+    }
+
+    /* ── GET actions ──────────────────────────────────────────────── */
     $user = $auth->requireAuth(['reports.view']);
     $db   = Database::getConnection();
+
+    // Report Builder: field catalog + filtered data
+    if ($action === 'meta') {
+        $rbCtrl = new ReportBuilderController();
+        echo json_encode(['success' => true, 'data' => $rbCtrl->catalog()]);
+        exit;
+    }
+    if ($action === 'data') {
+        $rbCtrl = new ReportBuilderController();
+        $type    = $_GET['type'] ?? '';
+        $filters = [
+            'date_from' => $_GET['date_from'] ?? null,
+            'date_to'   => $_GET['date_to']   ?? null,
+            'site_id'   => $_GET['site_id']   ?? null,
+            'guard_id'  => $_GET['guard_id']  ?? null,
+            'role_id'   => $_GET['role_id']   ?? null,
+            'severity'  => $_GET['severity']  ?? null,
+            'status'    => $_GET['status']    ?? null,
+        ];
+        echo json_encode(['success' => true, 'data' => $rbCtrl->data($type, $filters)]);
+        exit;
+    }
 
     $siteId   = !empty($_GET['site_id'])   ? (int)$_GET['site_id']   : null;
     $dateFrom = $_GET['date_from'] ?? date('Y-m-d', strtotime('-12 months'));

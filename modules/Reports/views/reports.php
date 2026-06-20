@@ -20,6 +20,19 @@ require_once get_layout('admin-nav');
     <h1>Reports &amp; Analytics</h1>
     <div class="gr-breadcrumb">Incident trends, site analysis, and guard activity</div>
   </div>
+  <div class="gr-page-actions">
+    <a href="<?= url('admin/reports/builder') ?>" class="gr-btn gr-btn-primary">
+      <i class="ri-file-chart-line"></i> Open Report Builder
+    </a>
+  </div>
+</div>
+
+<div class="gr-card" style="margin-bottom:20px;padding:14px 18px">
+  <div style="font-size:12px;color:var(--text-muted);margin-bottom:2px">Need a specific, printable report instead of a dashboard?</div>
+  <div style="font-size:13px">
+    Build a custom <strong>Incidents</strong>, <strong>Shifts</strong>, <strong>Guards</strong>, or <strong>Sites</strong> report with the fields and date range you choose —
+    <a href="<?= url('admin/reports/builder') ?>" style="color:var(--blue);font-weight:600">open the Report Builder →</a>
+  </div>
 </div>
 
 <!-- Filters -->

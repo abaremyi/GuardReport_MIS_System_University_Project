@@ -29,15 +29,16 @@ $routes = [
     '/api/users'                    => 'modules/Authentication/api/userApi.php',
     '/api/roles'                    => 'modules/Authentication/api/roleApi.php',
     '/api/profile'                  => 'modules/Authentication/api/profileApi.php',
+    '/api/settings'                 => 'modules/Settings/api/settingsApi.php',
 
     /* ── Admin: Core ──────────────────────────────────── */
     '/admin/dashboard'              => 'modules/Authentication/views/dashboard.php',
     '/admin/users'                  => 'modules/Authentication/views/users-management.php',
     '/admin/users/add'              => 'modules/Authentication/views/users-add.php',
     '/admin/users/view'             => 'modules/Authentication/views/users-view.php',
-    '/admin/roles'                  => 'modules/Authentication/views/roles-management.php',
+    '/admin/roles'                  => 'modules/Authentication/views/roles-permissions-management.php',
     '/admin/profile'                => 'modules/Authentication/views/profile.php',
-    '/admin/settings'               => 'modules/Authentication/views/settings.php',
+    '/admin/settings'               => 'modules/Settings/views/settings.php',
 
     /* ── Incidents ────────────────────────────────────── */
     '/admin/incidents'              => 'modules/Incidents/views/incidents.php',
@@ -58,6 +59,7 @@ $routes = [
 
     /* ── Reports ──────────────────────────────────────── */
     '/admin/reports'                => 'modules/Reports/views/reports.php',
+    '/admin/reports/builder'         => 'modules/Reports/views/report-builder.php',
     '/api/reports'                  => 'modules/Reports/api/reportApi.php',
 ];
 

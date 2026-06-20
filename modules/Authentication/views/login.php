@@ -80,6 +80,11 @@ if (!empty($_COOKIE['auth_token'])) {
       </button>
     </div>
 
+    <div class="footer-credentials" style="margin-top:">
+      <p>Demo Username: admin@guardreport.rw</p>
+      <p>Demo Password: 12345</p>
+    </div
+
     <!-- ── FORGOT PASSWORD ──────────────────── -->
     <div id="forgotPanel" style="display:none">
       <div id="fpStep1">

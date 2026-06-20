@@ -18,9 +18,6 @@ class JWTHandler {
             $d = JWT::decode($token, new Key($this->secret, 'HS256'));
             if (isset($d->is_super_admin)) $d->is_super_admin = (bool)$d->is_super_admin;
             return $d;
-        } catch (Exception $e) {
-            error_log('JWT validate: ' . $e->getMessage());
-            return false;
-        }
+        } catch (Exception $e) { error_log('JWT: '.$e->getMessage()); return false; }
     }
 }

@@ -526,6 +526,14 @@ body {
 }
 .gr-login-tab.active { color: var(--navy); border-bottom-color: var(--navy); }
 
+.footer-credentials {
+  margin: 20px 0;
+  gap: 10px;
+}
+.footer-credentials p {
+  font-size: 13px; color: var(--text-muted); margin-top: 4px;
+}
+
 /* ── DASHBOARD CHART CONTAINER ────────────────────────────── */
 .gr-chart-box { height: 260px; position: relative; }
 
