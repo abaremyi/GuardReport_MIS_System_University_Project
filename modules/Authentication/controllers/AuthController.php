@@ -203,7 +203,7 @@ class AuthController {
   <p style="color:#333;">Hello <strong>$name</strong>,</p>
   <p style="color:#555;line-height:1.6;">Use this code to verify your account. Expires in <strong>30 minutes</strong>.</p>
   <div style="background:#f8fafc;border:2px dashed #cbd5e1;border-radius:10px;padding:26px;text-align:center;margin:22px 0;">
-    <div style="font-size:42px;font-weight:800;letter-spacing:14px;color:#0F2744;font-family:monospace;">$otp</div>
+    <div style="font-size:32px;font-weight:800;letter-spacing:14px;color:#0F2744;font-family:monospace;">$otp</div>
   </div>
   <p style="color:#888;font-size:12px;">After verifying, an administrator will activate your account before you can log in.</p>
 </div>
